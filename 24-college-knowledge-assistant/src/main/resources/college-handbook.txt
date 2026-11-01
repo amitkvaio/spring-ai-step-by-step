@@ -1,0 +1,5 @@
+Library hours: The college library opens at 09:00 and closes at 17:00 Monday to Friday. It is closed on Sunday.
+Borrowing: Students may borrow three books for fourteen days. Renew before the due date at the library desk.
+Help desk: The college help desk opens at 10:00 and closes at 16:00 on weekdays. Bring your college identity card for account help.
+Admissions: Application dates are announced separately. This handbook does not contain the current admission deadline.
+Privacy: Never share passwords with a help desk assistant. The assistant cannot reset an account or access student grades.

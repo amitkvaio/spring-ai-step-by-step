@@ -1,0 +1,3 @@
+# Preserve the line endings required by each Maven launcher.
+mvnw text eol=lf
+mvnw.cmd text eol=crlf

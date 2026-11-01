@@ -15,3 +15,19 @@ buildNumber.properties
 .project
 # JDT-specific (Eclipse Java Development Tools)
 .classpath
+
+# Local validation outputs and downloaded dependencies
+.m2-cache/
+.course-build/
+boot-parent-check.xml
+
+# Local settings and credentials
+.env
+.env.*
+!.env.example
+*.log
+.idea/
+.vscode/
+*.iml
+.DS_Store
+Thumbs.db

@@ -1,0 +1,41 @@
+services:
+  postgres:
+    image: pgvector/pgvector:pg17
+    environment:
+      POSTGRES_DB: course
+      POSTGRES_USER: ${DB_USER:-course}
+      POSTGRES_PASSWORD: ${DB_PASSWORD:-local-course}
+    ports:
+      - "127.0.0.1:5433:5432"
+    volumes:
+      - vectors:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d course"]
+      interval: 5s
+      timeout: 3s
+      retries: 20
+  app:
+    build: .
+    ports:
+      - "127.0.0.1:8104:8104"
+    environment:
+      OLLAMA_BASE_URL: http://ollama:11434
+      SERVER_ADDRESS: 0.0.0.0
+      JDBC_URL: jdbc:postgresql://postgres:5432/course
+      DB_USER: ${DB_USER:-course}
+      DB_PASSWORD: ${DB_PASSWORD:-local-course}
+    depends_on:
+      postgres:
+        condition: service_healthy
+      ollama:
+        condition: service_started
+    mem_limit: 768m
+    cpus: 2
+    stop_grace_period: 15s
+  ollama:
+    image: ollama/ollama:latest
+    volumes:
+      - models:/root/.ollama
+volumes:
+  models:
+  vectors:

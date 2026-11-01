@@ -1,0 +1,6 @@
+{
+  "question": "How late can I visit?",
+  "topK": 2,
+  "minScore": 0.5,
+  "rewrite": true
+}
