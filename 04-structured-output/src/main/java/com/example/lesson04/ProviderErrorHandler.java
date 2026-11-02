@@ -7,9 +7,16 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.client.RestClientException;
+import org.springframework.web.server.ResponseStatusException;
 
 @RestControllerAdvice
 class ProviderErrorHandler {
+    @ExceptionHandler(ResponseStatusException.class)
+    ProblemDetail invalidTicket(ResponseStatusException exception) {
+        // Expose the controller's safe explanation, never the raw generated text.
+        return ProblemDetail.forStatusAndDetail(exception.getStatusCode(), exception.getReason());
+    }
+
     @ExceptionHandler({RestClientException.class, TransientAiException.class, NonTransientAiException.class})
     ProblemDetail providerUnavailable(RuntimeException exception) {
         // Do not send provider response bodies or internal connection details to callers.

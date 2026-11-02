@@ -166,6 +166,7 @@ For a **Postman** demonstration, create a request with these settings:
 - A summary must be nonblank and at most 160 characters.
 - Priority must be present.
 - **HTTP 502:** Check Ollama first.
+- The response's `detail` field distinguishes model-service failures, unparseable replies and incomplete ticket fields.
 - If it's running, the model may have returned unusable ticket fields.
 - The [HTTP tests](src/test/java/com/example/lesson04/LessonHttpTest.java) check valid mapping, malformed JSON, missing fields and provider failures using a local fixture.
 - This app only returns a suggested ticket.

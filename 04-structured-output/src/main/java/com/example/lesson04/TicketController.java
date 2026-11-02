@@ -7,7 +7,10 @@ import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Size;
 import org.springframework.ai.chat.client.ChatClient;
 import org.springframework.http.HttpStatus;
+import org.springframework.ai.retry.NonTransientAiException;
+import org.springframework.ai.retry.TransientAiException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClientException;
 import org.springframework.web.server.ResponseStatusException;
 
 @RestController
@@ -31,9 +34,14 @@ class TicketController {
             // This basic path is best effort, not provider-enforced schema output.
             ticket = chatClient.prompt().user(request.issue()).call().entity(Ticket.class);
         }
+        catch (RestClientException | TransientAiException | NonTransientAiException exception) {
+            // Let the advice distinguish an Ollama failure from invalid generated JSON.
+            throw exception;
+        }
         catch (RuntimeException exception) {
             // Parsing failures and provider failures must not expose raw model output.
-            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY, "The model did not return a usable ticket.");
+            throw new ResponseStatusException(HttpStatus.BAD_GATEWAY,
+                    "The model reply could not be parsed as a ticket. Try the request again.");
         }
         // Parsing JSON is not the same as checking required business fields.
         if (ticket == null || !validator.validate(ticket).isEmpty()) {

@@ -19,12 +19,12 @@ class ChatController {
     ChatReply chat(@Valid @RequestBody ChatQuestion request) {
         // Each request stands alone. No conversation memory is configured here.
         String answer = chatClient.prompt()
-                .user(request.question())
-                .call()
-                .content();
+                .user(request.getQuestion()) // The user's question
+                .call()  // Send it and wait for a response
+                .content(); // Extract the response text
         return new ChatReply(answer);
     }
 
-    record ChatQuestion(@NotBlank @Size(max = 1000) String question) {}
-    record ChatReply(String answer) {}
+    //record ChatQuestion(@NotBlank @Size(max = 1000) String question) {}
+    //record ChatReply(String answer) {}
 }

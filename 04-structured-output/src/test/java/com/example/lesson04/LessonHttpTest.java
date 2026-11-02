@@ -86,13 +86,20 @@ class LessonHttpTest {
     @Test
     void rejectsMalformedModelOutput() throws Exception {
         modelText.set("This is not JSON.");
-        assertThat(post(VALID_REQUEST).statusCode()).isEqualTo(502);
+        var reply = post(VALID_REQUEST);
+        assertThat(reply.statusCode()).isEqualTo(502);
+        assertThat(JSON.readTree(reply.body()).get("detail").asText())
+                .isEqualTo("The model reply could not be parsed as a ticket. Try the request again.");
+        assertThat(reply.body()).doesNotContain("This is not JSON.");
     }
 
     @Test
     void rejectsMissingRequiredOutputFields() throws Exception {
         modelText.set("{}");
-        assertThat(post(VALID_REQUEST).statusCode()).isEqualTo(502);
+        var reply = post(VALID_REQUEST);
+        assertThat(reply.statusCode()).isEqualTo(502);
+        assertThat(JSON.readTree(reply.body()).get("detail").asText())
+                .isEqualTo("The model returned incomplete ticket fields.");
     }
 
     @Test
@@ -102,6 +109,8 @@ class LessonHttpTest {
         var reply = post(VALID_REQUEST);
         assertThat(reply.statusCode()).isEqualTo(502);
         assertThat(reply.body()).doesNotContain("private provider diagnostic");
+        assertThat(JSON.readTree(reply.body()).get("detail").asText())
+                .isEqualTo("The model service could not complete the request. Check Ollama and the model name.");
         assertThat(calls.get()).isEqualTo(1);
     }
 

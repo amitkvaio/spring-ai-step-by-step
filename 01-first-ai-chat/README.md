@@ -25,7 +25,7 @@ Open [ChatController.java](src/main/java/com/example/lesson01/ChatController.jav
 
 ```java
 String answer = chatClient.prompt()
-        .user(request.question())
+        .user(request.getQuestion())
         .call()
         .content();
 ```
